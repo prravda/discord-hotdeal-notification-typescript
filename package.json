@@ -1,0 +1,35 @@
+{
+  "name": "discord-hotdeal-notification-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx ts-node app.ts",
+    "test": "npx jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prravda/discord-hotdeal-notification-typescript.git"
+  },
+  "author": "prravda",
+  "homepage": "https://github.com/prravda/discord-hotdeal-notification-typescript#readme",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.0.3",
+    "joi": "^17.7.1",
+    "memphis-dev": "^1.0.5",
+    "pg": "^8.11.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.3.16",
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "@types/node": "^18.11.19",
+    "jest": "^29.4.3",
+    "prettier": "2.8.3",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1"
+  }
+}
