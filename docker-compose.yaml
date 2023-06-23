@@ -4,6 +4,7 @@ services:
   notification-manager:
     hostname: notification-manager
     container_name: notification-manager
+    image: notification-manager:1.0.0
     build:
       context: .
       dockerfile: Dockerfile
@@ -16,8 +17,12 @@ services:
       - .env
     networks:
       - hotdeal-service
+      - persistence
 
 networks:
   hotdeal-service:
     name: hotdeal-service
+    external: true
+  persistence:
+    name: persistence
     external: true
