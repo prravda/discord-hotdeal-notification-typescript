@@ -23,16 +23,21 @@ const envListSchema = Joi.object({
 
     MEMPHIS_USER_NOTIFICATION_MANAGER_USER_NAME: Joi.string()
         .required()
-        .description('hot deal subscriber id of memphis'),
+        .description('hot deal consumer id of memphis'),
     MEMPHIS_USER_NOTIFICATION_MANAGER_PASSWORD: Joi.string()
         .required()
-        .description('hot deal subscriber password of memphis'),
+        .description('hot deal consumer password of memphis'),
     MEMPHIS_STATION_NAME: Joi.string()
         .required()
         .description('name of station'),
-    MEMPHIS_PRODUCER_NAME: Joi.string()
+
+    MEMPHIS_CONSUMER_NAME: Joi.string()
         .required()
-        .description('name of producer'),
+        .description('name of consumer'),
+    MEMPHIS_CONSUMER_GROUP_NAME: Joi.string()
+        .required()
+        .description('name of consumer group'),
+
     HOT_DEAL_UPDATED_EVENT_VERSION: Joi.number()
         .required()
         .description('version of hot deal updated event'),
@@ -67,7 +72,9 @@ export const ENV_LIST = {
     MEMPHIS_USER_NOTIFICATION_MANAGER_PASSWORD:
         afterValidate.MEMPHIS_USER_NOTIFICATION_MANAGER_PASSWORD as string,
     MEMPHIS_STATION_NAME: afterValidate.MEMPHIS_STATION_NAME as string,
-    MEMPHIS_PRODUCER_NAME: afterValidate.MEMPHIS_PRODUCER_NAME as string,
+    MEMPHIS_CONSUMER_NAME: afterValidate.MEMPHIS_CONSUMER_NAME as string,
+    MEMPHIS_CONSUMER_GROUP_NAME:
+        afterValidate.MEMPHIS_CONSUMER_GROUP_NAME as string,
     HOT_DEAL_UPDATED_EVENT_VERSION:
         afterValidate.HOT_DEAL_UPDATED_EVENT_VERSION as number,
 
