@@ -21,6 +21,13 @@ const envListSchema = Joi.object({
         .required()
         .description(`discord bot's client secret token`),
 
+    DISCORD_HOT_DEAL_SERVER_ID: Joi.string()
+        .required()
+        .description(`discord hot deal server id`),
+    DISCORD_HOT_DEAL_ANNOUNCEMENT_CHANNEL_ID: Joi.string()
+        .required()
+        .description(`discord announcement thread id`),
+
     MEMPHIS_USER_NOTIFICATION_MANAGER_USER_NAME: Joi.string()
         .required()
         .description('hot deal consumer id of memphis'),
@@ -66,6 +73,10 @@ export const ENV_LIST = {
     DISCORD_GUILD_ID: afterValidate.DISCORD_GUILD_ID as string,
     DISCORD_CLIENT_ID: afterValidate.DISCORD_CLIENT_ID as string,
     DISCORD_CLIENT_SECRET: afterValidate.DISCORD_CLIENT_SECRET as string,
+    DISCORD_HOT_DEAL_SERVER_ID:
+        afterValidate.DISCORD_HOT_DEAL_SERVER_ID as string,
+    DISCORD_HOT_DEAL_ANNOUNCEMENT_CHANNEL_ID:
+        afterValidate.DISCORD_HOT_DEAL_ANNOUNCEMENT_CHANNEL_ID as string,
 
     MEMPHIS_USER_NOTIFICATION_MANAGER_USER_NAME:
         afterValidate.MEMPHIS_USER_NOTIFICATION_MANAGER_USER_NAME as string,
