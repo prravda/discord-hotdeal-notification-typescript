@@ -2,15 +2,11 @@ import { Client, Events, GatewayIntentBits } from 'discord.js';
 import { ClientInstance } from './client';
 import { CommandManager } from './command-manager';
 import { ENV_LIST } from '../../infra/env-config';
-import { KeywordCommandController } from './controller/keyword-command.controller';
 
 const { Guilds, GuildMessages } = GatewayIntentBits;
 export class DiscordEntryPoint {
     private readonly discordClient: Client;
-    constructor(
-        private keywordCommandController: KeywordCommandController,
-        private readonly commandManager: CommandManager
-    ) {
+    constructor(private readonly commandManager: CommandManager) {
         this.discordClient = ClientInstance.getClient({
             intents: [Guilds, GuildMessages],
         });
