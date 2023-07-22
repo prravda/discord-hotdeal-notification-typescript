@@ -52,6 +52,8 @@ const envListSchema = Joi.object({
     DATABASE_USER: Joi.string().required().description('database username'),
     DATABASE_PASSWORD: Joi.string().required().description('database password'),
     DATABASE_NAME: Joi.string().required().description('database db name'),
+
+    REDIS_PASSWORD: Joi.string().required().description('redis password'),
 }).unknown();
 
 const validateEnvList = () => {
@@ -92,4 +94,6 @@ export const ENV_LIST = {
     DATABASE_USER: afterValidate.DATABASE_USER as string,
     DATABASE_PASSWORD: afterValidate.DATABASE_PASSWORD as string,
     DATABASE_NAME: afterValidate.DATABASE_NAME as string,
+
+    REDIS_PASSWORD: afterValidate.REDIS_PASSWORD as string,
 };
