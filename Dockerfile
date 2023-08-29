@@ -1,12 +1,11 @@
-FROM node:18.16.0-alpine
+FROM node:18.17.1-slim
 
-CMD ["npm", "install", "-g", "npm@9.6.7"]
-
-RUN mkdir /app
 WORKDIR /app
-COPY package.json /app
+COPY package.json package-lock.json ./
 
-RUN npm i
+RUN npm install --omit=dev \
+    --strict-peer-deps --loglevel verbose && \
+    rm -rf /root/.cache && rm -rf /root/.npm
 
 COPY . /app
 
