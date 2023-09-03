@@ -26,6 +26,7 @@ export const extractKeywordAndUserInfoListUsingKeyList = async (
             userId: info.userId,
             cameFrom: Number(info.cameFrom),
             keyword: info.keyword,
+            keywordInLowerCase: info.keyword.toLowerCase(),
         };
     });
 };
@@ -34,8 +35,6 @@ export const keywordNotificationManager = async (
     hotDeal: FmKoreaGeneralHotDeal | FmKoreaPopularHotDeal | PpomppuHotDeal,
     hotDealSource: HOT_DEAL_SOURCE
 ) => {
-    // required: compatibility for multi-threading with worker
-    // required: dynamically split the job by available worker thread on runtime
     const keyList = await redisConnection.keys('*');
 
     const keywordAndUserInfo = await extractKeywordAndUserInfoListUsingKeyList(
@@ -47,7 +46,7 @@ export const keywordNotificationManager = async (
     >[] = [];
 
     for (const info of keywordAndUserInfo) {
-        if (hotDeal.title.includes(info.keyword)) {
+        if (hotDeal.title.toLowerCase().includes(info.keywordInLowerCase)) {
             notifications.push({
                 destination: info.cameFrom,
                 userId: info.userId,
