@@ -25,7 +25,6 @@ export const extractKeywordAndUserInfoListUsingKeyList = async (
             userId: info.userId,
             cameFrom: Number(info.cameFrom),
             keyword: info.keyword,
-            keywordInLowerCase: info.keyword.toLowerCase(),
         };
     });
 };
@@ -45,7 +44,7 @@ export const keywordNotificationManager = async (
     >[] = [];
 
     for (const info of keywordAndUserInfo) {
-        if (hotDeal.title.toLowerCase().includes(info.keywordInLowerCase)) {
+        if (hotDeal.title.toLowerCase().includes(info.keyword.toLowerCase())) {
             notifications.push({
                 destination: info.cameFrom,
                 userId: info.userId,
