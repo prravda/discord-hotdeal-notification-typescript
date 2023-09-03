@@ -1,5 +1,4 @@
 import {
-    BasicHotDeal,
     FmKoreaGeneralHotDeal,
     FmKoreaPopularHotDeal,
     PpomppuHotDeal,
