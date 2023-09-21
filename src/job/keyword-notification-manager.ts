@@ -3,53 +3,40 @@ import {
     FmKoreaPopularHotDeal,
     PpomppuHotDeal,
 } from '../../types';
-import { KeywordAndUserInfo } from './types/keyword-and-user.info';
 import { Notification } from './events';
-import { redisConnection } from '../../infra/caches/cache-redis';
 import { discordNotificationJobQueue } from './queues/discord-notification';
 import { HOT_DEAL_SOURCE } from '../../infra/enums';
-
-export const extractKeywordAndUserInfoListUsingKeyList = async (
-    keyList: string[]
-) => {
-    const promiseShouldBeResolved = [];
-
-    for (const key of keyList) {
-        promiseShouldBeResolved.push(redisConnection.hgetall(key));
-    }
-
-    const beforeParsed = await Promise.all(promiseShouldBeResolved);
-
-    return beforeParsed.map<KeywordAndUserInfo>((info) => {
-        return {
-            userId: info.userId,
-            cameFrom: Number(info.cameFrom),
-            keyword: info.keyword,
-        };
-    });
-};
+import { KeywordSearchRepositoryInstance } from '../keyword-search/repository-instance';
+import { KeywordServiceInstance } from '../keywords/service-instance';
+import { createHash } from '../../helpers';
 
 export const keywordNotificationManager = async (
     hotDeal: FmKoreaGeneralHotDeal | FmKoreaPopularHotDeal | PpomppuHotDeal,
     hotDealSource: HOT_DEAL_SOURCE
 ) => {
-    const keyList = await redisConnection.keys('*');
+    const triggeredKeywordList =
+        await KeywordSearchRepositoryInstance.getRepository().searchInSentence(
+            hotDeal.title
+        );
 
-    const keywordAndUserInfo = await extractKeywordAndUserInfoListUsingKeyList(
-        keyList
-    );
+    const keywordAndUserInfo =
+        await KeywordServiceInstance.getService().getKeywordAndSubscriberListByKeywordHashList(
+            triggeredKeywordList.map<string>((keyword) => createHash(keyword))
+        );
 
     const notifications: Notification<
         FmKoreaGeneralHotDeal | FmKoreaPopularHotDeal | PpomppuHotDeal
     >[] = [];
 
-    for (const info of keywordAndUserInfo) {
-        if (hotDeal.title.toLowerCase().includes(info.keyword.toLowerCase())) {
+    for (const eachKeyword of keywordAndUserInfo) {
+        const { keyword, users } = eachKeyword;
+        for (const user of users) {
+            const { userId, cameFrom } = user;
             notifications.push({
-                destination: info.cameFrom,
-                userId: info.userId,
-                triggeredKeyword: info.keyword,
+                destination: cameFrom,
+                userId,
                 hotDealSource,
+                triggeredKeyword: keyword,
                 relatedHotDeal: hotDeal,
             });
         }

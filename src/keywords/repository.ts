@@ -1,12 +1,22 @@
 import { KeywordRepositoryInterface } from './interfaces/keyword-repository.interface';
-import { AppDataSource } from '../../infra/database/app-datasource';
 import { Keyword } from './entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { KeywordDomain } from './domain/keyword';
 
 export class KeywordRepository implements KeywordRepositoryInterface {
-    private keywordRepositoryTypeORM: Repository<Keyword>;
-    constructor() {
-        this.keywordRepositoryTypeORM =
-            AppDataSource.getDataSource().getRepository<Keyword>(Keyword);
+    constructor(private keywordRepositoryTypeORM: Repository<Keyword>) {}
+
+    public async getKeywordAndSubscriberListByKeywordHashList(
+        keywordHashList: string[]
+    ): Promise<KeywordDomain[]> {
+        const result = await this.keywordRepositoryTypeORM
+            .createQueryBuilder('keywords')
+            .where({ keywordHash: In([...keywordHashList]) })
+            .leftJoinAndSelect('keywords.users', 'users')
+            .getMany();
+
+        return result.map<KeywordDomain>((keywordResult) =>
+            KeywordDomain.fromTypeORM(keywordResult)
+        );
     }
 }

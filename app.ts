@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import 'dotenv/config';
 import { DiscordEntryPoint } from './src/discord/entrypoint';
 import { CommandManager } from './src/discord/command-manager';
