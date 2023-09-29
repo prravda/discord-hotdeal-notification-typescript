@@ -1,40 +1,32 @@
 import { Cluster } from 'ioredis';
 import { KeywordSearchRepositoryInterface } from './interfaces/keyword-search.repository.interface';
-import { KeywordSearchMachine } from './trie';
+import { TyniSearch } from 'tynisearch';
 
 export class KeywordSearchRepository
     implements KeywordSearchRepositoryInterface
 {
     constructor(private readonly keywordSearchCluster: Cluster) {}
 
-    private async getSerializedTrieFromMasterNode(): Promise<string> {
+    private async getSerializedTrieFromSlaveNodes(): Promise<string> {
         try {
-            const [masterNode] = this.keywordSearchCluster.nodes('master');
-            const serializedTrieFromMaster = await masterNode.get('keywords');
+            const serializedTrie = await this.keywordSearchCluster.get(
+                'keywords'
+            );
 
-            // if trie on 'keywords' does not exist, create a new one and set it
-            if (!serializedTrieFromMaster) {
-                const emptyTrieForInit = new KeywordSearchMachine();
-
-                const serializedEmptyTrie = JSON.stringify(
-                    emptyTrieForInit.toJSON()
-                );
-                await masterNode.set('keywords', serializedEmptyTrie);
-
-                return serializedEmptyTrie;
+            if (!serializedTrie) {
+                throw new Error('No trie found in storage');
             }
-
             // if trie on 'keywords' exists, just return it
-            return serializedTrieFromMaster;
+            return serializedTrie;
         } catch (e) {
             throw e;
         }
     }
 
-    private async getParsedTrie(): Promise<KeywordSearchMachine> {
+    private async getParsedTrie(): Promise<TyniSearch> {
         try {
-            const serializedTrie = await this.getSerializedTrieFromMasterNode();
-            return KeywordSearchMachine.fromJSON(JSON.parse(serializedTrie));
+            const serializedTrie = await this.getSerializedTrieFromSlaveNodes();
+            return TyniSearch.deserialize(serializedTrie);
         } catch (e) {
             throw e;
         }

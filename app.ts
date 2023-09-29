@@ -7,12 +7,16 @@ import { Message } from 'memphis-dev';
 import { JobController } from './src/job/controller';
 import { HotDealUpdated } from './infra/broker/events/hot-deal-updated';
 import { discordKeywordNotificationWorker } from './src/job/keyword-notification-worker';
+import { AppDataSource } from './infra/database/app-datasource';
 
 const bootstrap = async () => {
     try {
         // init discord application
         const discordApp = new DiscordEntryPoint(new CommandManager([]));
         await discordApp.startClient();
+
+        // init database
+        await AppDataSource.getDataSource().initialize();
 
         // init broker - consumer
         await BrokerConsumer.start();
