@@ -17,10 +17,26 @@ services:
       - hotdeal-service
       - persistence
 
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail-notification-manager
+    hostname: promtail-notification-manager
+    volumes:
+      - ./grafana-stack/promtail.yaml:/etc/promtail/docker-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/docker-config.yaml
+    networks:
+      - hotdeal-service
+      - monitoring
+
 networks:
   hotdeal-service:
     name: hotdeal-service
     external: true
   persistence:
     name: persistence
+    external: true
+  monitoring:
+    name: monitoring
     external: true
