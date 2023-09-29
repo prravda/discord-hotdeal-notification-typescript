@@ -16,6 +16,7 @@ services:
     networks:
       - hotdeal-service
       - persistence
+      - monitoring
 
   promtail:
     image: grafana/promtail:latest
