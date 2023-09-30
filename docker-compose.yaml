@@ -11,6 +11,9 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
     env_file:
       - .env
     networks:
