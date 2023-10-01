@@ -4,7 +4,7 @@ services:
   notification-manager:
     hostname: notification-manager
     container_name: notification-manager
-    image: notification-manager:1.0.0
+    image: notification-manager:1.0.1
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,8 +23,8 @@ services:
 
   promtail:
     image: grafana/promtail:latest
-    container_name: promtail-notification-manager
-    hostname: promtail-notification-manager
+    container_name: "promtail-notification-manager"
+    hostname: "promtail-notification-manager"
     volumes:
       - ./grafana-stack/promtail.yaml:/etc/promtail/docker-config.yaml
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
