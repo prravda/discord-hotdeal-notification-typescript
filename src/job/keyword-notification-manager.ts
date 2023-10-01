@@ -10,6 +10,7 @@ import { KeywordSearchRepositoryInstance } from '../keyword-search/repository-in
 import { KeywordServiceInstance } from '../keywords/service-instance';
 import { createHash } from '../../helpers';
 import { LokiLogger } from '../../infra/logger/loki-logger';
+import { KeywordDomain } from '../keywords/domain/keyword';
 
 export const keywordNotificationManager = async (
     hotDeal: FmKoreaGeneralHotDeal | FmKoreaPopularHotDeal | PpomppuHotDeal,
@@ -31,12 +32,18 @@ export const keywordNotificationManager = async (
             },
         });
 
-        const keywordAndUserInfo =
-            await KeywordServiceInstance.getService().getKeywordAndSubscriberListByKeywordHashList(
-                triggeredKeywordList.map<string>((keyword) =>
-                    createHash(keyword)
-                )
-            );
+        const keywordAndUserInfo: KeywordDomain[] = [];
+
+        if (triggeredKeywordList.length > 0) {
+            // query to database if only triggered keywords are exist
+            const keywordsAndSubscribedUsers =
+                await KeywordServiceInstance.getService().getKeywordAndSubscriberListByKeywordHashList(
+                    triggeredKeywordList.map<string>((keyword) =>
+                        createHash(keyword)
+                    )
+                );
+            keywordAndUserInfo.push(...keywordsAndSubscribedUsers);
+        }
 
         const notifications: Notification<
             FmKoreaGeneralHotDeal | FmKoreaPopularHotDeal | PpomppuHotDeal
